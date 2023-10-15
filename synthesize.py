@@ -40,7 +40,7 @@ def synthesize(input, output):
             if ele not in vars:
                 vars.add(ele)
                 d[ele] = chr(96 + len(vars))
-        print(d)
+        # print(d)
 
         while True:
             plist = grow(plist)
@@ -52,8 +52,8 @@ def synthesize(input, output):
                     ans = ""
                     for char in list(p):
                         try:
-                            print("trying")
-                            print(d[str(int(char))])
+                            # print("trying")
+                            # print(d[str(int(char))])
                             ans += d[str(int(char))]
                         except:
                             ans += char
