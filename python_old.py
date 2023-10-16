@@ -20,6 +20,11 @@ def divide(a, b):
 # Goal: find a formula/expression that works for all inputs/output pairs
 # NOTE: the a, b, c, ... correspond to the index of the inputs. the value of a can, for example, equal the value of b, but they correspond to the 1st and 2nd indices of the inputs, respectively
 
+inputs_all = [[2, 3, 5], [6, 4, 7, 1]]
+outputs_all = [1, 8] # should be a + a - b
+
+operations = [add, subtract, multiply, divide]
+operations_string = ['+', '-', '*', '/']
 
 all_letters = [letter for letter in string.ascii_lowercase]
 
@@ -37,7 +42,6 @@ def generate_expression(inputs_all, outputs_all, operations, operations_string):
         exprs_cur_input = []
 
         for length in range(1, num_inputs + 1):
-
             # Generate all combinations of numbers and operations of the given length
             for indices in product(range(num_inputs), repeat=length):
                 expr = []
@@ -52,6 +56,7 @@ def generate_expression(inputs_all, outputs_all, operations, operations_string):
                 
                 # evaluate the generated expression
                 result = expr[0]
+                print(len(expr))
                 for j in range(1, len(expr), 2):
                     result = expr[j](result, expr[j+1])
                 
@@ -65,11 +70,7 @@ def generate_expression(inputs_all, outputs_all, operations, operations_string):
     return list(common_element)[0] if common_element else None
 
 # Evaluate and display the expressions
-inputs_all = [[2, 3, 5], [6, 4, 7, 1]]
-outputs_all = [1, 8] # should be a + a - b
-
-operations = [add, subtract, multiply, divide]
-operations_string = ['+', '-', '*', '/']
 expression = generate_expression(inputs_all, outputs_all, operations, operations_string)
 
-print('Generated expression: ', expression)
+print('Generated expression:')
+print(expression)
