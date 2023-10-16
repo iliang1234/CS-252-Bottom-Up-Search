@@ -69,7 +69,7 @@ def elim_equiv_list(plist, answer):
     for i in range(len(answer)): # each pred is a list that has either been appended or not
         pred = answer[i]
         if pred not in ans:
-            ans.append(plist[i])
+            ans.append(pred)
             ans_list.append(plist[i])
             # print("eq: ", pred, "cand: ", candidate)
     return ans_list
@@ -114,6 +114,8 @@ def synthesize(input, output):
         while True:
             plist, answer_list = grow_list(plist, answer_list)
             plist = elim_equiv_list(plist, answer_list)
+            # pdb.set_trace()
+
             # print("after: ", plist)
             for i in range(len(answer_list)):
                 answer = answer_list[i]
@@ -144,7 +146,7 @@ def synthesize(input, output):
 # input = [2, 4, 7]  # Example inputs
 # output = 30     # Example desired output
 input = [[1, 1], [1, 1]]
-output = [1, 1, 1, 1, 1, 1]
+output = [1, 1, 1, 1, 1, 1, 1, 1]
 
 # Synthesize a program
 result = synthesize(input, output)
