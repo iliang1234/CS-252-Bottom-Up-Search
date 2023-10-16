@@ -117,7 +117,8 @@ def synthesize(input, output):
             # print("after: ", plist)
             for i in range(len(answer_list)):
                 answer = answer_list[i]
-                if Counter(answer) == Counter(output):
+                # if Counter(answer) == Counter(output):
+                if answer == output:
                     ans = plist[i]
                     list_matches = re.findall(r'\[.*?\]', plist[i])
 
@@ -149,7 +150,7 @@ def synthesize(input, output):
 # input = [2, 4, 7]  # Example inputs
 # output = 30     # Example desired output
 input = [[1, 2], [3, 1]]
-output = [1, 1, 2, 3, 3, 1]
+output = [1, 2, 1, 2, 1, 2, 3, 1, 3, 1, 1, 2]
 
 # NOTE: appending lists looks for the fact that all the elements in inputs appear in output; order does NOT matter
 
