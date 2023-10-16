@@ -107,8 +107,8 @@ def synthesize(input, output):
                             ans += char
                     return ans
     elif isinstance(output, list):
-        plist = [el for el in input]
-        answer_list = [ast.literal_eval(el) for el in input]
+        plist = [str(el) for el in input]
+        answer_list = [el for el in input]
         # print(d)
 
         while True:
@@ -148,7 +148,7 @@ def synthesize(input, output):
 # Example inputs and outputs
 # input = [2, 4, 7]  # Example inputs
 # output = 30     # Example desired output
-input = ['[1, 2]', '[3, 1]']
+input = [[1, 2], [3, 1]]
 output = [1, 1, 2, 3, 3, 1]
 
 # NOTE: appending lists looks for the fact that all the elements in inputs appear in output; order does NOT matter
