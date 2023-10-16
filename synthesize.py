@@ -133,14 +133,8 @@ def synthesize(input, output):
                             d[tuple(ele)] = chr(96 + len(vars))
 
                     for char in isolated_lists:
-                        # try:
-                        #     # print("trying")
-                        #     # print(d[str(int(char))])
-                        #     # ans += d[tuple(char)]
-                        # except:
-                        #     ans += str(char)
-
                         ans = ans.replace(str(char), d[tuple(char)])
+                    
                     return ans
         pass
     else:
@@ -149,10 +143,8 @@ def synthesize(input, output):
 # Example inputs and outputs
 # input = [2, 4, 7]  # Example inputs
 # output = 30     # Example desired output
-input = [[1, 2], [3, 1]]
-output = [1, 2, 1, 2, 1, 2, 3, 1, 3, 1, 1, 2]
-
-# NOTE: appending lists looks for the fact that all the elements in inputs appear in output; order does NOT matter
+input = [[1, 1], [1, 1]]
+output = [1, 1, 1, 1, 1, 1]
 
 # Synthesize a program
 result = synthesize(input, output)
