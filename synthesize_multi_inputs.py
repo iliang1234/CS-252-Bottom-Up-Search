@@ -26,16 +26,19 @@ def grow_list(plist, answer):
         for j in range(len(plist)):
             expr2 = plist[j]
             # obeys the grammar of the language
-            if isinstance(expr, list) and isinstance(expr2, list):
-                new_plist.append('([' + ', '.join(str(i) for i in expr) + '] + [' + ', '.join(str(i) for i in expr2) + '])') # 'append'
-            elif isinstance(expr, list) and isinstance(expr2, str):
-                new_plist.append('([' + ', '.join(str(i) for i in expr) + '] + ' + expr2 + ')')
-            elif isinstance(expr, str) and isinstance(expr2, list):
-                new_plist.append('(' + expr + ' + [' + ', '.join(str(i) for i in expr2) + '])')
-            else:
-                new_plist.append('(' + expr + ' + ' + expr2 + ')')
+            # if isinstance(expr, list) and isinstance(expr2, list):
+            #     print('one')
+            #     new_plist.append('([' + ', '.join(str(i) for i in expr) + '] + [' + ', '.join(str(i) for i in expr2) + '])') # 'append'
+            # elif isinstance(expr, list) and isinstance(expr2, str):
+            #     print('two')
+            #     new_plist.append('([' + ', '.join(str(i) for i in expr) + '] + ' + expr2 + ')')
+            # elif isinstance(expr, str) and isinstance(expr2, list):
+            #     print('three')
+            #     new_plist.append('(' + expr + ' + [' + ', '.join(str(i) for i in expr2) + '])')
+            expr_append = '(' + expr + ' + ' + expr2 + ')'
+            new_plist.append(expr_append) # append
             
-            # evaluation
+            # evaluation of append
             if (expr in plist) and (expr2 in plist):
                 new_ans.append(answer[plist.index(expr)] + answer[plist.index(expr2)])
             elif (expr in plist) and (expr2 not in plist):
@@ -45,8 +48,29 @@ def grow_list(plist, answer):
             else:
                 new_ans.append(ast.literal_eval(expr) + ast.literal_eval(expr2))
 
-    print("grew: ", len(new_plist))
-    return new_plist, new_ans
+    ret_list = new_plist.copy()
+    for expr in new_plist: 
+        # car (head)
+        expr_car = 'car(' + expr + ')'
+        ret_list.append(expr_car)
+
+        if expr in new_plist:
+            new_ans.append([new_ans[new_plist.index(expr)][0]])
+        else:
+            new_ans.append([ast.literal_eval(expr)[0]])
+
+        # pdb.set_trace()
+        # cdr (tail)
+        expr_cdr = 'cdr(' + expr + ')'
+        ret_list.append(expr_cdr)
+        if expr in new_plist:
+            new_ans.append([new_ans[new_plist.index(expr)][-1]])
+        else:
+            new_ans.append([ast.literal_eval(expr)[-1]])
+
+    # pdb.set_trace()
+    print("grew: ", len(ret_list))
+    return ret_list, new_ans
 
 def elim_equiv_arith(plist):
     ans = set()
@@ -120,10 +144,10 @@ def synthesize(inputs, outputs):
             # print(d)
 
             # while len(max(answer_list, key=len)) <= len(output): 
-            while count < len(input)+1:
+            while count < len(input):
                 print(count)
                 plist, answer_list = grow_list(plist, answer_list)
-                plist, answer_list = elim_equiv_list(plist, answer_list)
+                # plist, answer_list = elim_equiv_list(plist, answer_list)
 
                 # print("after: ", plist)
                 for i in range(len(answer_list)):
@@ -160,7 +184,7 @@ def synthesize(inputs, outputs):
 # input = [2, 4, 7]  # Example inputs
 # output = 30     # Example desired output
 input = [[[3, 4], [1, 2]], [[6, 7, 8], [9]]]
-output = [[3, 4, 1, 2, 1, 2, 3, 4, 3, 4], [6, 7, 8, 9, 9, 6, 7, 8, 6, 7, 8]]
+output = [[4, 1], [8, 9]]
 
 # Synthesize a program
 result = synthesize(input, output)
