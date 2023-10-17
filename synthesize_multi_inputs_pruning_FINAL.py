@@ -2,7 +2,8 @@ from sympy import simplify
 from itertools import combinations
 import ast
 
-MAX_DEPTH = 2
+MAX_DEPTH_LIST = 2
+MAX_DEPTH_ARITH = 5
 
 class Op:
     def __init__(self, arg_count, return_type, children_types):
@@ -171,7 +172,7 @@ def synthesize(inputs, outputs):
     if isinstance(outputs[0], int) or isinstance(outputs[0], float):
         d_list = createDicts(inputs)
         global_prog_bank, vars = initProgBank(d_list), initProgBank(d_list)
-        max_depth = MAX_DEPTH
+        max_depth = MAX_DEPTH_ARITH
         while max_depth > 0:
             inner_prog_bank = []
             for op in OPERATIONS_ARITH:
@@ -207,7 +208,7 @@ def synthesize(inputs, outputs):
                     else:
                         dict_grow[key].append(dic[key])
 
-        for _ in range(MAX_DEPTH):
+        for _ in range(MAX_DEPTH_LIST):
             for op in operations_list:
                 inner_program_bank_list = []
 
