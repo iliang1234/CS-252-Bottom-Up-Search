@@ -232,8 +232,10 @@ def synthesize(inputs, outputs, iters):
 
 
 
-iters = 6
-input = [[[6, 8, 0], [5], [3, 49], []], [[9, 6], [4], [8, 1]]]
-output = [[6, 8, 0, 49, 5], [9, 6, 1, 4]]
+iters = 1
+# input = [[[6, 8, 0], [5], [3, 49], []], [[9, 6], [4], [8, 1]]]
+# output = [[6, 8, 0, 49, 5], [9, 6, 1, 4]] # a + cdr(c) + b
+input = [[2, 2], [3, 3]]
+output = [4, 9]
 result = synthesize(input, output, iters)
 print("Synthesized program:", result)
