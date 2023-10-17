@@ -2,8 +2,8 @@ from collections import Counter
 import ast
 import re
 import json
-import pdb
 
+ITERATIONS = 50
 # Function to generate new expressions using the grammar
 def grow_arith(plist):
     new_plist = list()
@@ -77,7 +77,7 @@ def elim_equiv_list(plist, answer):
 
 
 # Main synthesis function
-def synthesize(inputs, outputs):
+def synthesize(inputs, outputs, iters):
     # Synthesize arithmatic/list expression
     all_outputs_list = []
 
@@ -85,6 +85,8 @@ def synthesize(inputs, outputs):
         input = inputs[i]
         output = outputs[i]
         count = 0
+        iterations = iters
+        
         if isinstance(output, int) or isinstance(output, float):
             # convert to string
             plist = [str(ele) for ele in input]
@@ -97,10 +99,8 @@ def synthesize(inputs, outputs):
                     d[ele] = chr(96 + len(vars))
             # print(d)
 
-            while True:
+            while iterations > 0:
                 plist = grow_arith(plist)
-                plist = elim_equiv_arith(plist)
-                # print("after: ", plist)
                 for p in plist:
                     if eval(p) == output:
                         # parse into variables
@@ -112,7 +112,12 @@ def synthesize(inputs, outputs):
                                 ans += d[str(int(char))]
                             except:
                                 ans += char
-                        return ans
+                iterations =- 1
+            
+            print(ans)
+            return None
+            # return set(ans) if len(set(ans)) != 0 else None
+            
         elif isinstance(output, list):
             plist = [str(el) for el in input]
             answer_list = [el for el in input]
@@ -157,11 +162,18 @@ def synthesize(inputs, outputs):
     return list(common_element)[0] if common_element else None
 
 # Example inputs and outputs
-# input = [2, 4, 7]  # Example inputs
-# output = 30     # Example desired output
-input = [[[3, 4], [1, 2]], [[6, 7, 8], [9]]]
-output = [[3, 4, 1, 2, 1, 2, 3, 4, 3, 4], [6, 7, 8, 9, 9, 6, 7, 8, 6, 7, 8]]
+# input = [[[3, 4], [1, 2]], [[6, 7, 8], [9]]]
+# output = [[3, 4, 1, 2, 1, 2, 3, 4, 3, 4], [6, 7, 8, 9, 9, 6, 7, 8, 6, 7, 8]]
+input = [[2,2],[2,2]]
+output = [4, 4]
+iters = 50
+# Test cases for lists
+# input = [[[1,2],[3,4]],[[1,3]]]
+# output = [[1,2,3,4], [1,3,1,3]]
+
 
 # Synthesize a program
-result = synthesize(input, output)
+result = synthesize(input, output, iters)
 print("Synthesized program:", result)
+# Test cases for arithmatic
+
