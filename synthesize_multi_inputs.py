@@ -12,7 +12,7 @@ def grow_arith(plist):
             new_plist.append('(' + expr + '-' + expr2 + ')')
             new_plist.append('(' + expr + '/' + expr2 + ')')
             new_plist.append('(' + expr + '*' + expr2 + ')')
-    print("grew: ", new_plist)
+    # print("grew: ", new_plist)
     return new_plist
 
 def grow_list(plist, answer):
@@ -49,7 +49,7 @@ def grow_list(plist, answer):
     ret_list = new_plist.copy()
     for expr in new_plist: 
         # car (head)
-        expr_car = 'car(' + expr + ')'
+        expr_car = 'CAR(' + expr + ')'
         ret_list.append(expr_car)
 
         if expr in new_plist:
@@ -66,7 +66,7 @@ def grow_list(plist, answer):
                 new_ans.append([ast.literal_eval(expr)[0]])
 
         # cdr (tail)
-        expr_cdr = 'cdr(' + expr + ')'
+        expr_cdr = 'CDR(' + expr + ')'
         ret_list.append(expr_cdr)
         if expr in new_plist:
             # cover the case where we have empty list
@@ -81,7 +81,7 @@ def grow_list(plist, answer):
                 new_ans.append([ast.literal_eval(expr)[-1]])
 
     # pdb.set_trace()
-    print("grew: ", len(ret_list))
+    # print("grew: ", len(ret_list))
     return ret_list, new_ans
 
 def elim_equiv_arith(plist):
@@ -168,7 +168,7 @@ def synthesize(inputs, outputs, iters):
                 print(ans)
                 all_outputs_list.append(ans)
                 iterations -= 1
-            print("all ans: ", all_outputs_list)
+            # print("all ans: ", all_outputs_list)
 
             
         elif isinstance(output, list):
@@ -222,15 +222,18 @@ def synthesize(inputs, outputs, iters):
 # output = [[3, 4, 1, 2, 1, 2, 3, 4, 3, 4], [6, 7, 8, 9, 9, 6, 7, 8, 6, 7, 8]]
 # input = [[2,3], [4, 5, 7, 21], [2, 45]]
 # output = [9, 25, 2025]
-iters = 1
+# iters = 1
 # input = [2, 4, 7]  # Example inputs
 # output = 30     # Example desired output
-input = [[[6, 8, 0], [3, 4], []], [[9, 6], [8, 1]]]
-output = [[6, 8, 0, 4], [9, 6, 1]]
+# input = [[[6, 8, 0], [3, 49], []], [[9, 6], [8, 1]]]
+# output = [[6, 8, 0, 49], [9, 6, 1]]
 
 # Synthesize a program
+
+
+
+iters = 6
+input = [[[6, 8, 0], [5], [3, 49], []], [[9, 6], [4], [8, 1]]]
+output = [[6, 8, 0, 49, 5], [9, 6, 1, 4]]
 result = synthesize(input, output, iters)
 print("Synthesized program:", result)
-# Test cases for arithmatic
-
- 
