@@ -55,18 +55,32 @@ def grow_list(plist, answer):
         ret_list.append(expr_car)
 
         if expr in new_plist:
-            new_ans.append([new_ans[new_plist.index(expr)][0]])
+            # pdb.set_trace()
+            # cover the case where we have empty list
+            if (len(new_ans[new_plist.index(expr)]) == 0) or (new_ans[new_plist.index(expr)] == [[]]):
+                new_ans.append([new_ans[new_plist.index(expr)]])
+            else:
+                new_ans.append([new_ans[new_plist.index(expr)][0]])
         else:
-            new_ans.append([ast.literal_eval(expr)[0]])
+            if (len(new_ans[new_plist.index(expr)]) == 0) or (new_ans[new_plist.index(expr)] == [[]]):
+                new_ans.append([ast.literal_eval(expr)])
+            else:
+                new_ans.append([ast.literal_eval(expr)[0]])
 
-        # pdb.set_trace()
         # cdr (tail)
         expr_cdr = 'cdr(' + expr + ')'
         ret_list.append(expr_cdr)
         if expr in new_plist:
-            new_ans.append([new_ans[new_plist.index(expr)][-1]])
+            # cover the case where we have empty list
+            if (len(new_ans[new_plist.index(expr)]) == 0) or (new_ans[new_plist.index(expr)] == [[]]):
+                new_ans.append([new_ans[new_plist.index(expr)]])
+            else:
+                new_ans.append([new_ans[new_plist.index(expr)][-1]])
         else:
-            new_ans.append([ast.literal_eval(expr)[-1]])
+            if (len(new_ans[new_plist.index(expr)]) == 0) or (new_ans[new_plist.index(expr)] == [[]]):
+                new_ans.append([ast.literal_eval(expr)])
+            else:
+                new_ans.append([ast.literal_eval(expr)[-1]])
 
     # pdb.set_trace()
     print("grew: ", len(ret_list))
@@ -144,7 +158,7 @@ def synthesize(inputs, outputs):
             # print(d)
 
             # while len(max(answer_list, key=len)) <= len(output): 
-            while count < len(input):
+            while count < 2: # 2 iterations of grow
                 print(count)
                 plist, answer_list = grow_list(plist, answer_list)
                 # plist, answer_list = elim_equiv_list(plist, answer_list)
@@ -155,18 +169,20 @@ def synthesize(inputs, outputs):
                     # if Counter(answer) == Counter(output):
                     if answer == output:
                         ans = plist[i]
-                        list_matches = re.findall(r'\[.*?\]', plist[i])
+                        list_matches = re.findall(r'\[\s*[^]]*\s*\]', plist[i])
 
                         # Convert the matched strings (lists) to actual lists
                         isolated_lists = [json.loads(match) for match in list_matches]
+                        # pdb.set_trace()
 
                         # Create variable encoder
-                        vars, d = [], {}
-                        for ele in isolated_lists:
+                        vars, d, c = [], {}, 0
+                        for ele in input:
                             if ele not in vars:
                                 vars.append(ele)
-                                d[tuple(ele)] = chr(96 + len(vars))
-
+                                d[tuple(ele)] = chr(97 + c) # start with 'a', and move up
+                                c += 1
+                        # pdb.set_trace()
                         for char in isolated_lists:
                             ans = ans.replace(str(char), d[tuple(char)])
                         
@@ -183,8 +199,8 @@ def synthesize(inputs, outputs):
 # Example inputs and outputs
 # input = [2, 4, 7]  # Example inputs
 # output = 30     # Example desired output
-input = [[[3, 4], [1, 2]], [[6, 7, 8], [9]]]
-output = [[4, 1], [8, 9]]
+input = [[[6, 8, 0], [3, 4], []], [[9, 6], [8, 1]]]
+output = [[6, 8, 0, 4], [9, 6, 1]]
 
 # Synthesize a program
 result = synthesize(input, output)
