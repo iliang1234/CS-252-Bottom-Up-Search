@@ -1,6 +1,7 @@
 from sympy import simplify
 from itertools import combinations
 import ast
+import re
 
 MAX_DEPTH_LIST = 2
 MAX_DEPTH_ARITH = 5
@@ -155,37 +156,61 @@ def isChildCorrect(prog, d_list, outputs):
     # print("apprently correct: ", prog, d_list, outputs)
     return True
 
+# This version of elim_equiv includes Z as terminal numbers
+# def elim_equiv_arith(prog_bank):
+#     simplified = set()
+#     for prog in prog_bank:
+#         simp_prog = simplify(prog)
+#         if simp_prog.is_integer:
+#             simp_prog = '+'.join(['(a/a)'] * int(simp_prog))
+#         if simp_prog not in simplified:
+#             simplified.add(simp_prog)
+    # print("simple: ", simplified)
+    # return ['(' + str(ele) +')' for ele in simplified]
+
+def replace_integer_with_repeated_addition(match):
+    num = int(match.group())
+    return '+'.join(['(a/a)'] * num)
+
 def elim_equiv_arith(prog_bank):
     simplified = set()
     for prog in prog_bank:
         simp_prog = simplify(prog)
-        if simp_prog not in simplified:
-            simplified.add(simp_prog)
-    # print("simple: ", simplified)
-    return ['(' + str(ele) +')' for ele in simplified]
+        simp_prog_str = str(simp_prog)
+
+        # Replace integers in the simplified string
+        simp_prog_str = re.sub(r'\b\d+\b', replace_integer_with_repeated_addition, simp_prog_str)
+
+        if simp_prog_str not in simplified:
+            simplified.add(simp_prog_str)
+
+    return ['(' + str(ele) + ')' for ele in simplified]
+
 
 OPERATIONS_ARITH = [Add(), Sub(), Mult(), Div()]
 
 # Main synthesis function
 def synthesize(inputs, outputs):
+
     # Synthesize arithmetic expression
     if isinstance(outputs[0], int) or isinstance(outputs[0], float):
         d_list = createDicts(inputs)
-        global_prog_bank, vars = initProgBank(d_list), initProgBank(d_list)
+        global_prog_bank = initProgBank(d_list)
+        # print("bank: ", global_prog_bank)
         max_depth = MAX_DEPTH_ARITH
         while max_depth > 0:
             inner_prog_bank = []
             for op in OPERATIONS_ARITH:
                 for child in combinations(global_prog_bank, op.arg_count):
+                    # print("child: ", child)
                     expr = "(" +  child[0] + str(op) + child[1] + ")"
+                    # print("expr: ", expr)
                     if isChildCorrect(expr, d_list, outputs):
-                        return simplify(expr)
+                        return expr
                     inner_prog_bank.append(expr)
             # prune
             pruned_progs = elim_equiv_arith(inner_prog_bank)
             global_prog_bank.extend(pruned_progs)
-            # print("unpruned: ",inner_prog_bank)
-            # print("pruned: ",pruned_progs)
             # add to final
             max_depth -= 1
         return None
@@ -269,20 +294,16 @@ def synthesize(inputs, outputs):
                 program_bank_list += inner_program_bank_list
         return None
 
-# Example inputs and outputs
-# input = [2, 4, 7]  # Example inputs
-# output = 30     # Example desired output
-# input = [[[6, 8, 0], [3, 49], []], [[9, 6], [8, 1]]]
-# output = [[6, 8, 0, 49], [9, 6, 1]]
+# EXAMPLE INPUT/OUTPUT PAIRS FOR AIRTHMETIC TARGET LANGUAGE
+input, output = [[2,3], [4, 5, 7, 21], [2, 45]], [9, 25, 2025]
+# input, output = [[2,3], [4, 9, 7, 21], [2, 5]], [1, 5, 3]
+# input, output = [[4, 9, 2352], [9, 42, 49350, 2], [2, 4, 2]], [2, 2, 2]
 
-# Synthesize a program
-# input = [[[6, 8, 0], [5], []], [[9, 6], []]]
-# output = [[], [6]] # a + cdr(c) + cdr(a+b)
-# input = [[[6, 8, 0], [], [1, 5]], [[9, 6],  [8, 1], []]]
-# output = [[6, 8, 0, 5], [9, 6]]
-# input = [[2,3], [4, 5, 7, 21], [2, 45]]
-# output = [9, 25, 2025]
-input = [[['a', 'be'], ['cee']], [['i'], ['love', 'you']]]
-output = [['a', 'be', 'cee', 'cee'], ['i', 'love', 'you', 'you']]
+# EXAMPLE INPUT/OUTPUT PAIRS FOR LIST MANIPULATION TARGET LANGUAGE
+# input, output = [[[6, 8, 0], [3, 49], []], [[9, 6], [8, 1]]], [[6, 8, 0, 49], [9, 6, 1]]
+# input, output = [[[6, 8, 0], [5], []], [[9, 6], []]], [[], [6]] # a + cdr(c) + cdr(a+b)
+# input, output = [[[6, 8, 0], [], [1, 5]], [[9, 6],  [8, 1], []]], [[6, 8, 0, 5], [9, 6]]
+# input, output = [[['a', 'be'], ['cee']], [['i'], ['love', 'you']]], [['a', 'be', 'cee', 'cee'], ['i', 'love', 'you', 'you']]
+
 result = synthesize(input, output)
 print("Synthesized program:", result)
