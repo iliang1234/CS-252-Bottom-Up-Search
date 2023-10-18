@@ -295,15 +295,16 @@ def synthesize(inputs, outputs):
         return None
 
 # EXAMPLE INPUT/OUTPUT PAIRS FOR AIRTHMETIC TARGET LANGUAGE
-input, output = [[2,3], [4, 5, 7, 21], [2, 45]], [9, 25, 2025]
+# input, output = [[2,3], [4, 5, 7, 21], [2, 45]], [9, 25, 2025]
 # input, output = [[2,3], [4, 9, 7, 21], [2, 5]], [1, 5, 3]
 # input, output = [[4, 9, 2352], [9, 42, 49350, 2], [2, 4, 2]], [2, 2, 2]
 
 # EXAMPLE INPUT/OUTPUT PAIRS FOR LIST MANIPULATION TARGET LANGUAGE
 # input, output = [[[6, 8, 0], [3, 49], []], [[9, 6], [8, 1]]], [[6, 8, 0, 49], [9, 6, 1]]
-# input, output = [[[6, 8, 0], [5], []], [[9, 6], []]], [[], [6]] # a + cdr(c) + cdr(a+b)
+# input, output = [[[6, 8, 0], [5], []], [[9, 6], []]], [[], [6]]
 # input, output = [[[6, 8, 0], [], [1, 5]], [[9, 6],  [8, 1], []]], [[6, 8, 0, 5], [9, 6]]
 # input, output = [[['a', 'be'], ['cee']], [['i'], ['love', 'you']]], [['a', 'be', 'cee', 'cee'], ['i', 'love', 'you', 'you']]
+input, output = [[[3, 4], [1], [2, 3]], [[6, 7, 8], [1, 5]], [[8, 8], [9, 4]]], [[3, 4, 1, 1], [6, 7, 8, 1, 5, 1], [8, 8, 9, 4, 9]]
 
 result = synthesize(input, output)
 print("Synthesized program:", result)
