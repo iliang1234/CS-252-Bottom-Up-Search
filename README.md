@@ -16,4 +16,6 @@ outputs_list_manipulation = [['a', 'be', 'cee', 'cee'], ['i', 'love', 'you', 'yo
 Synthesized program: ((a + b) + CDR(b))
 ```
 
-P.S. Note that the program should be run in Python3 in order to avoid any version errors of implemented/imported packages.
+A few notes on the program and implementation: <br>
+- We do a traversal based on depth. For arithmetic operations, we have a maximum depth of 5 (5 iterations). For lists, we decreased the maximum depth to 2 iterations because there is a lot more traversal in the list manipulations, thus increasing overall runtime. If given the chance in the future, we would like to look at size over depth.
+- The program should be run in Python3 in order to avoid any version errors of implemented/imported packages.
